@@ -1,4 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
 Description: Deployment template for the whole gym web scraper bot
 Parameters:
   GymBaseUrl:
@@ -6,19 +7,22 @@ Parameters:
     Description: Base URL of gym website
 Resources:
   GymBotFunction:
-    Type: AWS::Lambda::Function
+    Type: AWS::Serverless::Function
     Properties:
       FunctionName: GymScraperBot
       Runtime: python3.8
       Handler: bot.lambda_handler
-      Code:
-        ZipFile: |
-          def lambda_handler(event, context):
-            pass
+      CodeUri: bot/
       Role:
         Fn::GetAtt:
           - GymBotRole
           - Arn
+      Events:
+       GymBotScheduler:
+        Type: Schedule
+        Properties:
+          Schedule: rate(30 minutes)
+          Name: GymBotsScheduler
       Environment:
         Variables:
           GYM_BASE_URL:
@@ -39,17 +43,6 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
-  GymBotScheduler:
-    Type: AWS::Events::Rule
-    Properties:
-      Name: GymBotScheduler
-      ScheduleExpression: rate(30 minutes)
-      Targets:
-        - Arn:
-            Fn::GetAtt:
-              - GymBotFunction
-              - Arn
-          Id: GymBotFunction
   GymBotRole:
     Type: AWS::IAM::Role
     Properties:
@@ -63,18 +56,5 @@ Resources:
       RoleName: GymBotRole
       Path: /service-role/
       MaxSessionDuration: 3600
-  LambdaInvokePermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      FunctionName:
-        Fn::GetAtt:
-          - GymBotFunction
-          - Arn
-      Action: lambda:InvokeFunction
-      Principal: events.amazonaws.com
-      SourceAccount:
-        Ref: AWS::AccountId
-      SourceArn:
-        Fn::GetAtt:
-          - GymBotScheduler
-          - Arn
+  GymBotStorage:
+    Type: AWS::S3::Bucket
