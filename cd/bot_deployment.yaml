@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deployment template for the whole gym web scraper bot
+Parameters:
+  GymBaseUrl:
+    Type: String
+    Description: Base URL of gym website
+Resources:
+  GymBotFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: GymScraperBot
+      Runtime: python3.8
+      Handler: bot.lambda_handler
+      Code:
+        ZipFile: |
+          def lambda_handler(event, context):
+            pass
+      Role:
+        Fn::GetAtt:
+          - GymBotRole
+          - Arn
+      Environment:
+        Variables:
+          GYM_BASE_URL:
+            Ref: GymBaseUrl
+    DependsOn:
+      - GymVisitors
+      - GymBotRole
+  GymVisitors:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: S
+      TableName: GymVisitors
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  GymBotScheduler:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: GymBotScheduler
+      ScheduleExpression: rate(30 minutes)
+      Targets:
+        - Arn:
+            Fn::GetAtt:
+              - GymBotFunction
+              - Arn
+          Id: GymBotFunction
+  GymBotRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      RoleName: GymBotRole
+      Path: /service-role/
+      MaxSessionDuration: 3600
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+          - GymBotFunction
+          - Arn
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceAccount:
+        Ref: AWS::AccountId
+      SourceArn:
+        Fn::GetAtt:
+          - GymBotScheduler
+          - Arn
