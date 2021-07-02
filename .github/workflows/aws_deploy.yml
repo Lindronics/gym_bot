@@ -52,4 +52,4 @@ jobs:
         run: sam build -t bot_deployment.yaml
         
       - name: SAM deploy
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --resolve-s3 --region ${{secrets.AWS_REGION}} --parameter-overrides "GymBaseUrl=${{ secrets.GYM_BASE_URL }}"
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --resolve-s3 --region ${{secrets.AWS_REGION}} --parameter-overrides "GymBaseUrl=${{ secrets.GYM_BASE_URL }} GymLocation=${{ secrets.GYM_LOCATION }} GymEmail=${{ secrets.GYM_EMAIL }} GymPassword=${{ secrets.GYM_PASSWORD }}"

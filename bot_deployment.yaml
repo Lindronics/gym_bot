@@ -5,6 +5,15 @@ Parameters:
   GymBaseUrl:
     Type: String
     Description: Base URL of gym website
+  GymLocation:
+    Type: String
+    Description: Location of the gym
+  GymEmail:
+    Type: String
+    Description: User email
+  GymPassword:
+    Type: String
+    Description: User password
 Resources:
   GymBotScraperFunction:
     Type: AWS::Serverless::Function
@@ -28,6 +37,14 @@ Resources:
         Variables:
           GYM_BASE_URL:
             Ref: GymBaseUrl
+          GYM_LOCATION:
+            Ref: GymLocation
+          GYM_EMAIL:
+            Ref: GymEmail
+          GYM_PASSWORD:
+            Ref: GymPassword
+          TABLE_NAME:
+            Ref: GymVisitors
     DependsOn:
       - GymVisitors
       - GymBotRole
