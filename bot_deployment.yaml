@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Deployment template for the whole gym web scraper bot
+Parameters:
+  GymBaseUrl:
+    Type: String
+    Description: Base URL of gym website
+  GymLocation:
+    Type: String
+    Description: Location of the gym
+  GymEmail:
+    Type: String
+    Description: User email
+  GymPassword:
+    Type: String
+    Description: User password
+Resources:
+  GymBotScraperFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GymBotScraper
+      Runtime: python3.8
+      Handler: bot.lambda_handler
+      CodeUri: bot/
+      PackageType: Zip
+      Role:
+        Fn::GetAtt:
+          - GymBotRole
+          - Arn
+      Events:
+        GymBotScheduler:
+          Type: Schedule
+          Properties:
+            Schedule: rate(30 minutes)
+            Name: GymBotsScheduler
+      Environment:
+        Variables:
+          GYM_BASE_URL:
+            Ref: GymBaseUrl
+          GYM_LOCATION:
+            Ref: GymLocation
+          GYM_EMAIL:
+            Ref: GymEmail
+          GYM_PASSWORD:
+            Ref: GymPassword
+          TABLE_NAME:
+            Ref: GymVisitors
+    DependsOn:
+      - GymVisitors
+      - GymBotRole
+  GymVisitors:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: timestamp
+          AttributeType: S
+      TableName: GymVisitors
+      KeySchema:
+        - AttributeName: timestamp
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  GymBotRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      RoleName: GymBotRole
+      Path: /service-role/
+      MaxSessionDuration: 3600
+      Policies:
+        - PolicyName: "DynamoDbPutItem"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "dynamodb:PutItem"
+                Resource:
+                  Fn::GetAtt:
+                    - GymVisitors
+                    - Arn
+  GymBotStorage:
+    Type: AWS::S3::Bucket
