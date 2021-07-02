@@ -24,17 +24,17 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: SAM validate
-        run: sam validate -t cd/bot_deployment.yaml
+        run: sam validate -t bot_deployment.yaml
 
       - name: SAM build
-        run: sam build -t cd/bot_deployment.yaml
+        run: sam build -t bot_deployment.yaml
 
   deploy:
     runs-on: ubuntu-latest
     needs: 
       - build
-    if: 
-      github.ref == 'refs/heads/main'
+    # if: 
+      # github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v2
@@ -49,4 +49,4 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: SAM deploy
-        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --resolve-s3 --region ${{secrets.AWS_REGION}} -t cd/bot_deployment.yaml --parameter-overrides "GymBaseUrl=${{ secrets.GYM_BASE_URL }}"
+        run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --resolve-s3 --region ${{secrets.AWS_REGION}} -t bot_deployment.yaml --parameter-overrides "GymBaseUrl=${{ secrets.GYM_BASE_URL }}"
