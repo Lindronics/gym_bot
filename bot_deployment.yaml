@@ -13,16 +13,17 @@ Resources:
       Runtime: python3.8
       Handler: bot.lambda_handler
       CodeUri: bot/
+      PackageType: Zip
       Role:
         Fn::GetAtt:
           - GymBotRole
           - Arn
       Events:
-       GymBotScheduler:
-        Type: Schedule
-        Properties:
-          Schedule: rate(30 minutes)
-          Name: GymBotsScheduler
+        GymBotScheduler:
+          Type: Schedule
+          Properties:
+            Schedule: rate(30 minutes)
+            Name: GymBotsScheduler
       Environment:
         Variables:
           GYM_BASE_URL:
