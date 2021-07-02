@@ -6,10 +6,10 @@ Parameters:
     Type: String
     Description: Base URL of gym website
 Resources:
-  GymBotFunction:
+  GymBotScraperFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: GymScraperBot
+      FunctionName: GymBotScraper
       Runtime: python3.8
       Handler: bot.lambda_handler
       CodeUri: bot/
