@@ -2,7 +2,7 @@ from boto3 import resource
 from boto3.dynamodb.conditions import Key, Attr
 from datetime import datetime
 import os
-import json
+import simplejson as json
 
 
 def lambda_handler(event, context):
@@ -26,5 +26,5 @@ def lambda_handler(event, context):
 
     return {
         "statusCode": 200,
-        "body": json.dumps(response)
+        "body": json.dumps(response["Items"])
     }
