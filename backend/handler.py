@@ -1,5 +1,5 @@
 from boto3 import resource
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Key, Attr
 import os
 from datetime import datetime
 
@@ -19,8 +19,8 @@ def lambda_handler(event, context):
     dynamodb = resource("dynamodb")
     table = dynamodb.Table(os.environ["TABLE_NAME"])
     
-    response = table.query(
-        KeyConditionExpression=(Key("timestamp").lte(end.isoformat()) & Key("timestamp").gte(start.isoformat()))
+    response = table.scan(
+        FilterExpression=(Attr("timestamp").between(start.isoformat(), end.isoformat()))
     )
 
     return {
