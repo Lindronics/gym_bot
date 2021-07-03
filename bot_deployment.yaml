@@ -48,6 +48,31 @@ Resources:
     DependsOn:
       - GymVisitors
       - GymBotRole
+  GymBotBackend:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GymBotBackend
+      Runtime: python3.8
+      Handler: handler.lambda_handler
+      CodeUri: backend/
+      PackageType: Zip
+      Role:
+        Fn::GetAtt:
+          - GymBotRole
+          - Arn
+      Events:
+        GetRequest:
+          Type: Api
+          Properties:
+            Path: /gym-visitors
+            Method: GET
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: GymVisitors
+    DependsOn:
+      - GymVisitors
+      - GymBotRole
   GymVisitors:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -75,13 +100,14 @@ Resources:
       Path: /service-role/
       MaxSessionDuration: 3600
       Policies:
-        - PolicyName: "DynamoDbPutItem"
+        - PolicyName: "DynamoDbReadWrite"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
               - Effect: "Allow"
                 Action:
                   - "dynamodb:PutItem"
+                  - "dynamodb:GetItem"
                 Resource:
                   Fn::GetAtt:
                     - GymVisitors
