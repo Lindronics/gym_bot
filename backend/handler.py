@@ -24,7 +24,9 @@ def lambda_handler(event, context):
         FilterExpression=(Attr("timestamp").between(start.isoformat(), end.isoformat()))
     )
 
+    response = sorted(response["Items"], key=lambda x: x["timestamp"])
+
     return {
         "statusCode": 200,
-        "body": json.dumps(response["Items"])
+        "body": json.dumps(response)
     }
