@@ -1,7 +1,8 @@
 from boto3 import resource
 from boto3.dynamodb.conditions import Key, Attr
-import os
 from datetime import datetime
+import os
+import json
 
 
 def lambda_handler(event, context):
@@ -25,5 +26,5 @@ def lambda_handler(event, context):
 
     return {
         "statusCode": 200,
-        "body": response
+        "body": json.dumps(response)
     }
