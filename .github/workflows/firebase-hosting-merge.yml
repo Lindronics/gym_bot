@@ -21,3 +21,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_GYMBOT_6464D }}'
           channelId: live
           projectId: gymbot-6464d
+          entryPoint: ./frontend
