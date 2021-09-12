@@ -14,7 +14,12 @@ def lambda_handler(event, context):
     except:
         return {
             "statusCode": 400,
-            "body": "Missing or incorrect headers"
+            "body": "Missing or incorrect query parameters.",
+            "headers": {
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+            }
         }
     
     dynamodb = resource("dynamodb")
@@ -28,5 +33,10 @@ def lambda_handler(event, context):
 
     return {
         "statusCode": 200,
-        "body": json.dumps(response)
+        "body": json.dumps(response),
+        "headers": {
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+        }
     }

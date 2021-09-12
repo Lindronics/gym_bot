@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "gymbot-6464d": {
+      "hosting": {
+        "frontend": [
+          "gymbot-6464d"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "gymbot-6464d"
+  }
+}
