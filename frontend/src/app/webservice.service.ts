@@ -11,7 +11,8 @@ export class WebserviceService {
   constructor(private http: HttpClient) { }
 
   getGymVisitors(start: number, end: number): Observable<DataPoint[]> {
-    return this.http.get<DataPoint[]>("https://fkyqu62i91.execute-api.us-east-2.amazonaws.com/Prod/gym-visitors",
+    // TODO replace hardcoded URL
+    return this.http.get<DataPoint[]>("https://7hnrd4i8ij.execute-api.us-east-2.amazonaws.com/Prod/gym-visitors",
       { params: { start: start, end: end } })
   }
 
