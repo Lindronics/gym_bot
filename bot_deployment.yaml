@@ -75,7 +75,6 @@ Resources:
     DependsOn:
       - GymVisitors
       - GymBotRole
-      - GymBotBackendApi
   GymBotBackendApi:
     Type: AWS::Serverless::Api
     Properties:
