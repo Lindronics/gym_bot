@@ -1,1 +1,11 @@
-<plotly-plot [data]="graph.data" [layout]="graph.layout" [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}"></plotly-plot>
+<div class="text-center">
+    <h1 class="display-5 fw-bold p-3"> Gym bot </h1>
+    <div class="btn-group p-3" role="group" *ngFor="let timeFrame of timeFrameOptions">
+        <button type="button" class="btn btn-primary" (click)="fetchData(timeFrame.fn(now()))">{{timeFrame.name}}</button>
+    </div>
+    <app-spinner></app-spinner>
+    <div class="p-3">
+        <plotly-plot [data]="graph.data" [layout]="graph.layout" [useResizeHandler]="true"
+        [style]="{position: 'relative', width: '100%', height: '100%'}"></plotly-plot>
+    </div>
+</div>
