@@ -6,13 +6,15 @@ import * as PlotlyJS from 'plotly.js-dist-min';
 
 import { AppComponent } from './app.component';
 import { ChartComponent } from './chart/chart.component';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChartComponent
+    ChartComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

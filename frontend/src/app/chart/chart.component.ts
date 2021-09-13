@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataPoint } from '../data_point';
 import { WebserviceService } from '../webservice.service';
 import { TimeFrame } from '../timeframe';
+import { SpinnerService } from '../spinner.service';
 
 @Component({
   selector: 'app-chart',
@@ -17,16 +18,16 @@ export class ChartComponent implements OnInit {
   ]
   public now = Date.now
 
-  constructor(private webService: WebserviceService) { }
+  constructor(private webService: WebserviceService, private spinnerService: SpinnerService) { }
 
   ngOnInit(): void {
-    this.fetchData(TimeFrame.dayBefore(Date.now()));
+    this.fetchData(TimeFrame.dayBefore(Date.now()))
   }
 
   generateGraph(x: Date[], y: number[]) {
     return {
       data: [
-        { x: x, y: y, type: 'scatter', mode: 'lines+points', marker: { color: 'red' } }
+        { x: x, y: y, type: 'scatter', mode: 'lines+points', marker: { color: 'red' }, line: {shape: 'spline'} }
       ],
       layout: { autosize: true, title: 'Gym visitors in the last 24 hours' }
     }
@@ -38,6 +39,8 @@ export class ChartComponent implements OnInit {
         let x = points.map((point: DataPoint) => new Date(point.timestamp))
         let y = points.map((point: DataPoint) => point.value)
         this.graph = this.generateGraph(x, y)
+
+        this.spinnerService.hide()
       })
   }
 }

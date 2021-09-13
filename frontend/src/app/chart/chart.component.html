@@ -1,5 +1,8 @@
 <div class="btn-group" role="group" aria-label="Basic example" *ngFor="let timeFrame of timeFrameOptions">
     <button type="button" class="btn btn-primary" (click)="fetchData(timeFrame.fn(now()))">{{timeFrame.name}}</button>
 </div>
-<plotly-plot [data]="graph.data" [layout]="graph.layout" [useResizeHandler]="true"
-    [style]="{position: 'relative', width: '100%', height: '100%'}"></plotly-plot>
+<app-spinner></app-spinner>
+<div>
+    <plotly-plot [data]="graph.data" [layout]="graph.layout" [useResizeHandler]="true"
+        [style]="{position: 'relative', width: '100%', height: '100%'}"></plotly-plot>
+</div>
